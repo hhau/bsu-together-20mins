@@ -1,0 +1,27 @@
+\begin{center}
+\begin{tikzpicture}[node distance = 2cm, thick, state/.style={circle, draw, minimum width = 1.5cm, align = center}]
+  % nodes
+  \node [state] (data) {$Y_{1}$};
+  \node [state, opacity = 0.75][above right = 1.75cm of data.center] (data1) {$Y_{2}$};
+  \node [state, opacity = 0.5][above right = 1.25cm of data1.center] (data2) {$Y_{3}$};
+  \node [state, opacity = 0.25][above right = 1.25cm of data2.center] (data3) {$Y_{4}$};
+  
+  \node [state][right = 2.0cm of data] (model) {  $\pd_{1}(\phi, \psi_{1}, Y_{1})$};
+  \node [state, opacity = 0.3][above right = 1.75cm of model.center] (model1) {$\pd_{2}(\phi, \psi_{2}, Y_{2})$};
+  \node [state, opacity = 0.2][above right = 1.25cm of model1.center] (model2) {$\pd_{3}(\phi, \psi_{3}, Y_{3})$};
+  \node [state, opacity = 0.1][above right = 1.25cm of model2.center] (model3) {$\pd_{4}(\phi, \psi_{4}, Y_{4})$};
+
+  % edges
+  \draw [dashed] [->] (model) to [bend right = 20] (data);  
+  \draw [dashed] [->] (data) to [bend right = 20] (model);  
+
+  \draw [dashed, opacity = 0.3] [->] (model1) to [bend right = 2  0] (data1);
+  \draw [dashed, opacity = 0.15] [->] (data1) to [bend right =  20] (model1); 
+
+  \draw [dashed, opacity = 0.2] [->] (model2) to [bend right = 20] (data2);
+  \draw [dashed, opacity = 0.2] [->] (data2) to [bend right = 20] (model2); 
+
+  \draw [dashed, opacity = 0.1] [->] (model3) to [bend right = 20] (data3);
+  \draw [dashed, opacity = 0.1] [->] (data3) to [bend right = 20] (model3); 
+\end{tikzpicture}
+\end{center}

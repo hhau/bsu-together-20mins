@@ -1,0 +1,11 @@
+\begin{center}
+\begin{tikzpicture}[node distance = 2cm, thick, state/.style={circle, draw, minimum width = 1.5cm, align = center}]
+  % nodes
+  \node [state] (data) {Data: \\ $Y$};
+  \node [state][right = 2.0cm of data] (model) {Model: \\ $\pd(\phi, \psi, Y)$};
+
+  % edges
+  \draw [dashed] [->] (model) to [bend right = 70] (data);
+  \draw [dashed] [->] (data) to [bend right = 70] (model); 
+\end{tikzpicture}
+\end{center}

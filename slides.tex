@@ -1,0 +1,333 @@
+\documentclass[10pt,ignorenonframetext,]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usetheme[]{metropolis}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\newif\ifbibliography
+\hypersetup{
+            pdftitle={Markov melding, submodel conflict, and self-density ratios},
+            pdfauthor={Andrew Manderson},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \let\insertsectionnumber\relax
+    \let\sectionname\relax
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \let\insertsubsectionnumber\relax
+  \let\subsectionname\relax
+  \frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+\usepackage{amsmath}
+% I always seem to need tikz for something
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes, intersections, through, backgrounds, fit, decorations.pathmorphing}
+
+% \usepackage{setspace}
+% \onehalfspacing
+
+\usepackage{lineno}
+% \linenumbers
+
+% required for landscape pages. beware, they back the build very slow.
+\usepackage{pdflscape}
+
+% table
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{caption}
+
+% \usepackage[colorlinks=true, urlcolor=citecolor, linkcolor=citecolor, citecolor=citecolor]{hyperref}
+
+% cross out math
+\usepackage[makeroom]{cancel}
+
+\usepackage{color}
+\definecolor{mymidblue}{RGB}{44, 127, 184}
+\newcommand{\semitransp}[2][35]{\color{fg!#1}#2}
+
+% beamer things
+\setbeamercolor{frametitle}{bg=black}
+\setbeamerfont{footnote}{size=\tiny}
+
+\setcounter{secnumdepth}{3}
+
+% pd stands for: probability distribution and is useful to distringuish
+% marignals for probabilities specifically p(p_{1}) and the like.
+\newcommand{\pd}{\text{p}}
+\newcommand{\q}{\text{q}}
+\newcommand{\w}{\text{w}}
+\newcommand{\pdr}{\text{r}}
+\newcommand{\pdrh}{\hat{\text{r}}}
+
+% melding
+\newcommand{\ppoolphi}{\pd_{\text{pool}}(\phi)}
+
+% the q(x)w(x), "weighted target" density 
+% for the moment I'm going to call it s(x), as that is the next letter of the 
+% alphabet. Can change it later
+\newcommand{\s}{\text{s}}
+% direct density estimate - replaces lambda.
+\newcommand{\ddest}{\text{s}}
+
+% constants - usually sizes of things
+\newcommand{\Nx}{N}
+\newcommand{\Nnu}{\text{N}_{\text{nu}}}
+\newcommand{\Nde}{\text{N}_{\text{de}}}
+\newcommand{\Nmc}{\text{N}_{\text{mc}}}
+\newcommand{\Nw}{W}
+\newcommand{\Nm}{M}
+
+% locales - could switch to x and x'
+\newcommand{\xnu}{x_{\text{nu}}}
+\newcommand{\xde}{x_{\text{de}}}
+\newcommand{\phinu}{\phi_{\text{nu}}}
+\newcommand{\phide}{\phi_{\text{de}}}
+
+% sugiyama stuff
+\newcommand{\pdnu}{\pd_{\text{nu}}}
+\newcommand{\pdde}{\pd_{\text{de}}}
+
+
+% indices 
+\newcommand{\wfindex}{w}
+\newcommand{\sampleindex}{n}
+\newcommand{\modelindex}{m}
+
+\title{Markov melding, submodel conflict, and self-density ratios}
+\author{Andrew Manderson}
+\date{2019-10-03}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Statistical modelling}
+
+\input{tex-input/0010-tikz-iteration.tex}
+
+\end{frame}
+
+\begin{frame}{Modern statistical modelling}
+
+\input{tex-input/0020-tikz-iteration.tex}
+
+\end{frame}
+
+\begin{frame}{Melding based statistical modelling?}
+
+\input{tex-input/0030-tikz-iteration.tex}
+
+\end{frame}
+
+\begin{frame}{Markov melding}
+
+\begin{itemize}
+\tightlist
+\item
+  Markov melding (Goudie et al. 2019) lets us join models with common
+  component: \(\phi\)
+\item
+  Ideally we would specify the generative model (For \(M = 2\)
+  submodels): \input{tex-input/0040-melding-conditionals.tex}
+\item
+  Models developed in isolation, re-express as:
+  \input{tex-input/0050-melding-joint.tex}
+\item
+  Analytic form of \(\pd_{\modelindex}(\phi)\) often unknown
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Multi-stage sampler}
+
+\begin{itemize}
+\tightlist
+\item
+  Need to sample the melded posterior:
+  \input{tex-input/0060-melded-posterior.tex}
+\item
+  Submodels can be complex \(\rightarrow\) Sample in stages
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Stage one acceptance probability}
+
+\begin{itemize}
+\tightlist
+\item
+  Say we we choose to target:
+  \input{tex-input/0070-stage-one-target.tex}
+\item
+  Given our stage one target, the stage one sampler has the following
+  acceptance probability:
+  \input{tex-input/0071-stage-one-acceptance.tex} 
+\item
+  (asymptotically) Produces samples from the stage one target
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Stage two acceptance probability}
+
+\begin{itemize}
+\tightlist
+\item
+  Stage two target, the melded posterior:
+  \input{tex-input/0080-stage-two-target.tex}
+\item
+  Use stage one samples of \(\phi\) as the proposal distribution in a
+  Gibbs update for \(\phi \mid \psi\):
+  \input{tex-input/0081-stage-two-acceptance.tex}
+\item
+  Stage one terms cancel:
+  \input{tex-input/0082-stage-two-acceptance-simplified.tex}
+\item
+  \(\pd_{2}(\phi)\) not known analytically \(\rightarrow\) substitute
+  KDE: \(\hat{\pd}_{2}(\phi)\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conflict}
+
+\input{tex-input/0100-stage-two-acceptance-simplified-kde.tex}
+
+\begin{center}\includegraphics[width=0.9\linewidth]{figures/conflict} \end{center}
+
+\end{frame}
+
+\begin{frame}{Conflict in action}
+
+\input{tex-input/0100-stage-two-acceptance-simplified-kde.tex}
+
+\begin{center}\includegraphics[width=0.9\linewidth]{figures/stage-two-trace-presentation-one} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  H1N1 example from Goudie et al. (2019) 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Self density ratios}
+
+\begin{itemize}
+\item
+  Only interact with unknown marginal via self-density ratio (Hiraoka,
+  Hamada, and Hori 2018):
+  \input{tex-input/0110-self-density-ratio-definition.tex}
+\item
+  \emph{Weighted-sample self-density ratio estimation} (WSRE) Intuition:
+
+  \begin{itemize}
+  \item
+    Sampling \(\phi \sim \pd(\phi, \psi, Y)\) admits
+    \(\phi \sim \pd(\phi)\)
+  \item
+    Instead, sample:
+    \(\phi \sim \pd(\phi, \psi, Y) \w(\phi; \eta) \,\, \rightarrow \,\, \phi \sim \pd(\phi)\w(\phi; \eta) = \s(\phi)\)
+  \item
+    Use the weighted sample density estimator of Jones (1991):
+
+    \input{tex-input/0112-jones-kde-def.tex}
+  \item
+    Ratio estimator is then:
+
+    \input{tex-input/0111-ratio-estimator-definition.tex}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{WSRE intuition - 1}
+
+\begin{center}\includegraphics[width=0.9\linewidth]{figures/weighted-dist-plot} \end{center}
+
+\end{frame}
+
+\begin{frame}{WSRE intuition - \(\Nw\)}
+
+\begin{center}\includegraphics[width=0.9\linewidth]{figures/weighted-dist-plot-many} \end{center}
+
+\end{frame}
+
+\begin{frame}{Fixed!}
+
+\input{tex-input/0140-stage-two-acceptance-simplified-wsre.tex}
+
+\begin{center}\includegraphics[width=0.9\linewidth]{figures/stage-two-trace-presentation-two} \end{center}
+
+\end{frame}
+
+\begin{frame}{References}
+
+\hypertarget{refs}{}
+\hypertarget{ref-goudie:etal:18}{}
+Goudie, Robert J. B., Anne M. Presanis, David Lunn, Daniela De Angelis,
+and Lorenz Wernisch. 2019. ``Joining and Splitting Models with Markov
+Melding.'' \emph{Bayesian Anal.} 14 (1). International Society for
+Bayesian Analysis: 81--109.
+doi:\href{https://doi.org/10.1214/18-BA1104}{10.1214/18-BA1104}.
+
+\hypertarget{ref-hiraoka:hamada:hori:18}{}
+Hiraoka, Kazuyuki, Toshihiko Hamada, and Gen Hori. 2018. ``Necessary and
+Sufficient Conditions of Proper Estimators based on Self Density Ratio
+for Unnormalized Statistical Models.'' \emph{Neural Networks} 98:
+263--70.
+doi:\href{https://doi.org/10.1016/j.neunet.2017.11.018}{10.1016/j.neunet.2017.11.018}.
+
+\hypertarget{ref-jones:91}{}
+Jones, M. C. 1991. ``Kernel Density Estimation for Length Biased Data.''
+\emph{Biometrika} 78 (3). Oxford University Press, Biometrika Trust:
+511--19. \url{http://www.jstor.org/stable/2337020}.
+
+\end{frame}
+
+\end{document}
