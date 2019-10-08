@@ -1,5 +1,5 @@
 ---
-title: "Markov melding, submodel conflict, and self-density ratios"
+title: "Markov melding, multi-stage sampling, and self-density ratios"
 author: "Andrew Manderson"
 date: "`r Sys.Date()`"
 output:
@@ -17,7 +17,7 @@ bibliography: ../../Projects/0bibliography/year-1-bib.bib
 ---
 
 ```{r options, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, comment = NA, fig.align = "center", out.width = "90%", knitr.graphics.auto_pdf = TRUE)
+knitr::opts_chunk$set(echo = FALSE, comment = NA, fig.align = "center", out.width = "100%", knitr.graphics.auto_pdf = TRUE)
 ```
 
 # Statistical modelling
@@ -34,23 +34,30 @@ knitr::opts_chunk$set(echo = FALSE, comment = NA, fig.align = "center", out.widt
 
 # Markov melding
 
-- Markov melding [@goudie:etal:18] lets us join models with common component: $\phi$
+- Markov melding [@goudie:etal:18] is a method for joining models with common component: $\phi$
 - Ideally we would specify the generative model (For $M = 2$ submodels):
 \input{tex-input/0040-melding-conditionals.tex}
 - Models developed in isolation, re-express as:
 \input{tex-input/0050-melding-joint.tex}
 - Analytic form of $\pd_{\modelindex}(\phi)$ often unknown
+    - Can cause numerical issues in the model fitting process
+    - Requires accurate estimation in low probability regions  
+    - We will revisit
 
 # Multi-stage sampler
 
 - Need to sample the melded posterior:
 \input{tex-input/0060-melded-posterior.tex}
-- Submodels can be complex $\rightarrow$ Sample in stages
+- Submodels can be complex $\rightarrow$ sample in stages
+    - Multi-stage sampling & approximations are common in practice
+    - Staged sampling targets components of $\pd_{\text{meld}}(\phi, \psi_{1}, \psi_{2} \mid Y_{1}, Y_{2})$ in a cumulative manner
+    - Can reuse other implementations of $\pd_{m}(\phi, \psi_{\modelindex}, Y_{\modelindex})$
+    - Potentially more efficient
 
 # Stage one acceptance probability
 
 <!-- Bold the stage one bits from the joint -->
-- Say we we choose to target:
+- Say we choose to target, $\pd_{\text{meld}, 1}(\phi, \psi_{1} \mid Y_{1})$:
 \input{tex-input/0070-stage-one-target.tex}
 - Given our stage one target, the stage one sampler has the following acceptance probability:
 \input{tex-input/0071-stage-one-acceptance.tex}
@@ -81,7 +88,7 @@ knitr::opts_chunk$set(echo = FALSE, comment = NA, fig.align = "center", out.widt
  -->
 # Conflict
 \input{tex-input/0100-stage-two-acceptance-simplified-kde.tex}
-```{r conflict_dists}
+```{r conflict_dists, out.width = "85%"}
 knitr::include_graphics("figures/conflict.pdf")
 ```
 
@@ -99,19 +106,19 @@ knitr::include_graphics("figures/stage-two-trace-presentation-one.png")
 <!-- cite Hiraoka? -->
 <!-- Maths on this slide -->
 
-- Only interact with unknown marginal via self-density ratio [@hiraoka:hamada:hori:18]:
+We only interact with unknown marginal via self-density ratio [@hiraoka:hamada:hori:18]:
   \input{tex-input/0110-self-density-ratio-definition.tex}
 
-- _Weighted-sample self-density ratio estimation_ (WSRE) Intuition:
-    - Sampling $\phi \sim \pd(\phi, \psi, Y)$ admits $\phi \sim \pd(\phi)$ 
-    - Instead, sample: $\phi \sim \pd(\phi, \psi, Y) \w(\phi; \eta) \,\, \rightarrow \,\, \phi \sim \pd(\phi)\w(\phi; \eta) = \s(\phi)$
-    - Use the weighted sample density estimator of @jones:91:
-        
-        \input{tex-input/0112-jones-kde-def.tex}
+_Weighted-sample self-density ratio estimation_ (WSRE) Intuition:
 
-    - Ratio estimator is then:
+- Sampling $\phi \sim \pd(\phi, \psi, Y)$ admits $\phi \sim \pd(\phi)$ 
+- Instead, sample:   
+  $\phi \sim \pd(\phi, \psi, Y) \w(\phi; \xi) \quad \rightarrow \quad \phi \sim \frac{1}{Z}\pd(\phi)\w(\phi; \xi) = \s(\phi)$
+- Use the weighted sample density estimator of @jones:91:
+  \input{tex-input/0112-jones-kde-def.tex}
+- Ratio estimator is then:  
+  \input{tex-input/0111-ratio-estimator-definition.tex}
 
-        \input{tex-input/0111-ratio-estimator-definition.tex}
 
 # WSRE intuition - 1
 
@@ -125,15 +132,35 @@ knitr::include_graphics("figures/weighted-dist-plot.pdf")
 knitr::include_graphics("figures/weighted-dist-plot-many.pdf")
 ```
 
-<!-- second picture with points -->
-# Fixed!
+# H1N1 example - 2
 \input{tex-input/0140-stage-two-acceptance-simplified-wsre.tex}
 ```{r good_traces}
 knitr::include_graphics("figures/stage-two-trace-presentation-two.png")
 ```
 
-<!-- Acceptance probability -->
+# Future plans
 
-<!-- whole thing -->
+- Markov melding for ICU delirium, using electronic health record data
+    - Observational data (Temperature, respiratory rate)
+    - Blood test data
+    - Daily ICU drug dose data
+    - Each source is idiosyncratic $\rightarrow$ requires substantial modelling effort (and domain expertise)
+- Melding for multiple $\phi$: $\pd_{1}(\phi_{1}, Y_{1}) \,\,\,\, \pd_{2}(\phi_{1}, \phi_{2}, Y_{2}) \,\,\,\, \pd_{3}(\phi_{2}, Y_{3})$
+- Addressing other kinds of internal difference in scale and location (conflict)
+
+
+# Links
+
+Should you also wish to estimate self-density ratios:
+  
+- https://github.com/hhau/wsre
+
+The traceplots are from this example:
+
+-  https://github.com/hhau/full-melding-example
+
+This talk:
+  
+-  https://github.com/hhau/bsu-together-20mins
 
 # References

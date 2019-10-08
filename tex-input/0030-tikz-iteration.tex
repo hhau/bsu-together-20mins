@@ -11,7 +11,7 @@
   \node [state, opacity = 0.9][above right = 1.25cm of model1.center] (model2) {$\pd_{3}(\phi, \psi_{3}, Y_{3})$};
   \node [state, opacity = 0.9][above right = 1.25cm of model2.center] (model3) {$\pd_{4}(\phi, \psi_{4}, Y_{4})$};
 
-  \node [rectangle, draw, inner sep = 10pt] [right = 2.75cm of model.center] (meld) {$\pd_{\text{meld}} (\phi, \psi_{1}, \ldots, Y_{1}, \ldots)$};
+  \node [rectangle, draw, inner sep = 3pt] [below right = 0.3cm and 1.40cm of model.center] (meld) {$\pd_{\text{meld}} (\phi, \psi_{1}, \psi_{2}, \psi_{3}, \psi_{4}, Y_{1}, Y_{2}, Y_{3}, Y_{4})$};
 
   % edges
   \draw [dashed] [->] (model) to [bend right = 20] (data);
