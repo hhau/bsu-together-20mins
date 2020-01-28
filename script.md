@@ -2,9 +2,34 @@
 
 - statistical model building is often thought of as an iterative approach.
   - build model, check adequacy, refine model if inadequate.
+- Very old idea in statistics.
+- Empirical evidence suggests that the complexity of the model criticism process is a non-linear function of the size and variety of the data input
+  - it gets much much harder as the data get bigger / more numerous 
 - Some modern statistical analyses make this tricky, as they require considering multiple data sources, which may differ.
+
+# Complex applied analyses
+
+- with this in mind, let us look at an applied analysis from some other members of the BSU
+- $5^{*}$ data sources, each idiosyncratic and requiring significant model development time.
+    - Some at the hospital level, some at the nation level. 
+    - Some models are also available for some of the data sources, would be nice to reuse them.
+- trying to develop a sufficiently nuanced joint model for all these data sources would be prohibitively difficult.
+- Really, we'd like to build submodels and combine them together to approximate "the joint model we wish we could specify".
+- We will come back to a simplified version of this problem later.
+
+# Notation 1
+
+- Let's introduce some notation
+- The usual model criticism/development paradigm considers data $Y_{1}$, and model $\pd_{1}$, with parameters $\phi$, $\psi_{1}$, and iterates until we are satisfied with the properties of $\pd_{1}$. 
+
+# Notation 2
+
+<!-- Adjust this slide - ugly, Rob's better -->
+
+- The situation we seem to find ourselves with examples like the A/H1N1 analysis is that we have multiple information sources and we'd like to build and critique models for each of them. 
+- So now we have $\Nm$ models, each having model-specific data and parameters $\psi_{\modelindex}$, but importantly they all share a common quantity $\phi$.
+  - $\phi$ does necessarily have to be a "natural" parameter in all of the models, it can be a function of other parameters in any of the submodels.
 - A possible solution to this is to go through the model building process for each data source, then combine them after the fact.
-- The can be some challenges if the submodel conflict in any way, one of which we will discuss in a moment.
 
 # Markov melding
 

@@ -28,7 +28,7 @@
 }{}
 \newif\ifbibliography
 \hypersetup{
-            pdftitle={Markov melding, multi-stage sampling, and self-density ratios},
+            pdftitle={Combining multiple sources of information with Markov melding},
             pdfauthor={Andrew Manderson},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -66,7 +66,7 @@
 \usepackage{amsmath}
 % I always seem to need tikz for something
 \usepackage{tikz}
-\usetikzlibrary{positioning, shapes, intersections, through, backgrounds, fit, decorations.pathmorphing}
+\usetikzlibrary{positioning, shapes, intersections, through, backgrounds, fit, decorations.pathmorphing, angles, quotes}
 
 % \usepackage{setspace}
 % \onehalfspacing
@@ -96,6 +96,8 @@
 % beamer things
 \setbeamercolor{frametitle}{bg=black}
 \setbeamerfont{footnote}{size=\tiny}
+\widowpenalties 1 150
+\setbeamertemplate{page number in head/foot}{}
 
 \setcounter{secnumdepth}{3}
 
@@ -141,12 +143,66 @@
 \newcommand{\sampleindex}{n}
 \newcommand{\modelindex}{m}
 
-\title{Markov melding, multi-stage sampling, and self-density ratios}
+\title{Combining multiple sources of information with Markov melding}
+\subtitle{Examples, challenges, and (partial) solutions}
 \author{Andrew Manderson}
-\date{2019-10-07}
+\institute{MRC Biostatistics Unit, University of Cambridge \& The Alan Turing
+Institute.}
+\date{2020-01-28}
 
 \begin{document}
 \frame{\titlepage}
+
+\begin{frame}{Model criticism - 1}
+
+\begin{center}\includegraphics[width=1\linewidth]{figures/modelling-process} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  From Cook and Weisberg (1982), but really from Box (1979; 1980)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Model criticism - 2}
+
+\begin{center}\includegraphics[width=1\linewidth]{figures/modelling-process-2} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  From Cook and Weisberg (1982), but really from Box (1979; 1980)
+\item
+  Non-linear increase in difficulty when
+  \(\textcolor{myredhighlight}{n, p \to \infty}\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{A complex applied analysis}
+
+\begin{center}\includegraphics[width=1\linewidth]{figures/2014_Presanis_melding-h1n1-example} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  5 sources of data, each idiosyncratic.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Some known to be biased in particular directions
+  \item
+    Different levels of aggregation, national / hospital specific data
+  \end{itemize}
+\item
+  Specifying and critiquing a joint model for all of this?
+\item
+  Will return to a simplified version
+\end{itemize}
+
+\end{frame}
 
 \begin{frame}{Statistical modelling}
 
@@ -154,7 +210,7 @@
 
 \end{frame}
 
-\begin{frame}{Modern statistical modelling}
+\begin{frame}{Statistical submodelling}
 
 \input{tex-input/0020-tikz-iteration.tex}
 
@@ -166,7 +222,7 @@
 
 \end{frame}
 
-\begin{frame}{Markov melding}
+\begin{frame}{\emph{Specification}: Markov melding}
 
 \begin{itemize}
 \tightlist
@@ -177,25 +233,73 @@
   Ideally we would specify the generative model (For \(M = 2\)
   submodels): \input{tex-input/0040-melding-conditionals.tex}
 \item
-  Models developed in isolation, re-express as:
+  Submodels developed in isolation, re-express as:
   \input{tex-input/0050-melding-joint.tex}
 \item
-  Analytic form of \(\pd_{\modelindex}(\phi)\) often unknown
+  Analytic form of
+  \(\textcolor{myredhighlight}{\pd_{\modelindex}(\phi)}\) often unknown
 
   \begin{itemize}
   \tightlist
   \item
     Can cause numerical issues in the model fitting process
   \item
-    Requires accurate estimation in low probability regions\\
-  \item
-    We will revisit
+    Requires accurate estimation in low probability regions
+
+    \begin{itemize}
+    \tightlist
+    \item
+      We will revisit
+    \end{itemize}
   \end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Multi-stage sampler}
+\begin{frame}{\emph{Specification}: Notes on the pooled prior}
+
+\(\ppoolphi\) addresses two issues:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Necessary because we have two priors for \(\phi\) (Poole and Raftery
+  2000) \vspace{0.5cm}
+\item
+  \(\ppoolphi\) should be appropriate for \(\phi\) under the melded
+  model \emph{and} both submodels
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Suggests defining \(\ppoolphi = g(\pd_{1}(\phi), \pd_{2}(\phi))\)
+  \item
+    Similar problem encountered when experts encode their opinions as
+    priors (O'Hagan et al. 2006)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(\textcolor{myredhighlight}{\textbf{Log}}\):
+      \(\ppoolphi = \pd_{1}(\phi)^{w_{1}} \pd_{2}(\phi)^{w_{2}}\)
+    \item
+      Linear:
+      \(\ppoolphi = {w_{1}}\pd_{1}(\phi) + {w_{2}}\pd_{2}(\phi)\)
+      \vspace{0.25cm}
+    \item
+      Product-of-experts: \(\ppoolphi = \pd_{1}(\phi) \pd_{2}(\phi)\)
+      (Hinton 2002)
+    \item
+      Dictatorial: \(\ppoolphi = \pd_{\modelindex}(\phi)\) for an
+      \(\modelindex \in \{1, 2\}\)
+    \end{itemize}
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{\emph{Estimation}: Multi-stage sampler}
 
 \begin{itemize}
 \tightlist
@@ -223,7 +327,7 @@
 
 \end{frame}
 
-\begin{frame}{Stage one acceptance probability}
+\begin{frame}{\emph{Estimation}: Stage one acceptance probability}
 
 \begin{itemize}
 \tightlist
@@ -241,7 +345,7 @@
 
 \end{frame}
 
-\begin{frame}{Stage two acceptance probability}
+\begin{frame}{\emph{Estimation}: Stage two acceptance probability}
 
 \begin{itemize}
 \tightlist
@@ -249,20 +353,110 @@
   Stage two target, the melded posterior:
   \input{tex-input/0080-stage-two-target.tex}
 \item
-  Use stage one samples of \(\phi\) as the proposal distribution in a
-  Gibbs update for \(\phi \mid \psi\):
+  Use stage one samples of \(\phi, \psi_{1}\) as the proposal
+  distribution in a Metropolis-within-Gibbs update for
+  \(\phi, \psi_{1} \mid \psi_{2}\):
   \input{tex-input/0081-stage-two-acceptance.tex}
 \item
   Stage one terms cancel:
   \input{tex-input/0082-stage-two-acceptance-simplified.tex}
 \item
-  \(\pd_{2}(\phi)\) not known analytically \(\rightarrow\) substitute
-  KDE: \(\hat{\pd}_{2}(\phi)\)
+  Generic Metropolis-Hastings update for
+  \(\psi_{2} \mid \phi, \psi_{1}\) 
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Conflict}
+\begin{frame}{\emph{Example}: Simplified version of Presanis et. al.
+(2014)}
+
+\begin{itemize}
+\tightlist
+\item
+  We will now consider a simplified version of Presanis et. al. (2014)
+\item
+  Submodel details are not overly important for our purpose
+\item
+  Consider 2 submodels:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    Models number of patients in the ICU with H1N1
+  \item
+    Collapses the other 4 data sources into an informative prior
+    structure
+  \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\emph{Example}: Submodel 1 - ICU submodel}
+
+\input{tex-input/0091-tikz-model-1.tex}
+
+\begin{itemize}
+\tightlist
+\item
+  Notation: \(\psi_{1} = (\theta, \pi^{\text{pos}})\)
+\item
+  \(\pd_{1}(\theta, Y)\) is a thinned Poisson process as an
+  observational model for \(Y\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Can derive total number of people in ICU with influenza
+  \end{itemize}
+\item
+  \(\pi^{\text{pos}}\) derived from virological data
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Informs the proportion of people with influenza who are positive for
+    H1N1
+  \end{itemize}
+\item
+  Submodel deterministically defines
+  \(\phi = f(\theta, \pi^{\text{pos}})\).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\emph{Example}: Submodel 2 - Simplified severity model}
+
+\input{tex-input/0092-tikz-model-2.tex}
+
+\begin{itemize}
+\tightlist
+\item
+  Notation: \(\psi_{2} = (\chi, \pi^{\text{det}})\)
+\item
+  \(\phi \sim \text{Bin}(\chi, \pi_{\text{det}})\) to account for known
+  underestimation of \(\phi\)
+\item
+  Informative prior for \(\chi\) summarises other components of severity
+  model
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\emph{Example}: Multi-stage sampler - in DAG form}
+
+\input{tex-input/0093-tikz-model-3.tex}
+
+\begin{itemize}
+\tightlist
+\item
+  After stage 2 (\(s_{2}\)), every node's distribution incorporates
+  information from \(Y_{1}\) and \(\chi\).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\emph{Issue 1}: Things don't always work!}
 
 \input{tex-input/0100-stage-two-acceptance-simplified-kde.tex}
 
@@ -270,27 +464,22 @@
 
 \end{frame}
 
-\begin{frame}{Conflict in action}
+\begin{frame}{\emph{Issue 1}: KDE error in action}
 
 \input{tex-input/0100-stage-two-acceptance-simplified-kde.tex}
 
 \begin{center}\includegraphics[width=1\linewidth]{figures/stage-two-trace-presentation-one} \end{center}
 
-\begin{itemize}
-\tightlist
-\item
-  H1N1 example from Goudie et al. (2019) 
-\end{itemize}
-
 \end{frame}
 
-\begin{frame}{Self density ratios}
+\begin{frame}{\emph{Method 1}: Self density ratios}
 
 We only interact with unknown marginal via self-density ratio (Hiraoka,
 Hamada, and Hori 2018):
 \input{tex-input/0110-self-density-ratio-definition.tex}
 
-\emph{Weighted-sample self-density ratio estimation} (WSRE) Intuition:
+\emph{Weighted-sample self-density ratio estimation} (WSRE) (Manderson
+and Goudie 2020) Intuition:
 
 \begin{itemize}
 \tightlist
@@ -304,25 +493,25 @@ Hamada, and Hori 2018):
   Use the weighted sample density estimator of Jones (1991):
   \input{tex-input/0112-jones-kde-def.tex}
 \item
-  Ratio estimator is then:\\
+  Ratio estimator is then: \vspace{-0.35cm}\\
   \input{tex-input/0111-ratio-estimator-definition.tex}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{WSRE intuition - 1}
+\begin{frame}{\emph{Method 1}: WSRE intuition - 1}
 
 \begin{center}\includegraphics[width=1\linewidth]{figures/weighted-dist-plot} \end{center}
 
 \end{frame}
 
-\begin{frame}{WSRE intuition - \(\Nw\)}
+\begin{frame}{\emph{Method 1}: WSRE intuition - \(\Nw\)}
 
 \begin{center}\includegraphics[width=1\linewidth]{figures/weighted-dist-plot-many} \end{center}
 
 \end{frame}
 
-\begin{frame}{H1N1 example - 2}
+\begin{frame}{\emph{Method 1}: H1N1 example - 2}
 
 \input{tex-input/0140-stage-two-acceptance-simplified-wsre.tex}
 
@@ -330,31 +519,44 @@ Hamada, and Hori 2018):
 
 \end{frame}
 
-\begin{frame}{Future plans}
+\begin{frame}{\emph{Issue 2}: Submodel conflict}
+
+\begin{center}\includegraphics[width=1\linewidth]{figures/subpost-disagreement} \end{center}
 
 \begin{itemize}
 \tightlist
 \item
-  Markov melding for ICU delirium, using electronic health record data
+  Last issue arose (primarily) due to differences in scale
+\item
+  What about more general model conflict?
 
   \begin{itemize}
   \tightlist
   \item
-    Observational data (Temperature, respiratory rate)
-  \item
-    Blood test data
-  \item
-    Daily ICU drug dose data
-  \item
-    Each source is idiosyncratic \(\rightarrow\) requires substantial
-    modelling effort (and domain expertise)
+    There is a philosophical issue here
   \end{itemize}
 \item
-  Melding for multiple \(\phi\):
-  \(\pd_{1}(\phi_{1}, Y_{1}) \,\,\,\, \pd_{2}(\phi_{1}, \phi_{2}, Y_{2}) \,\,\,\, \pd_{3}(\phi_{2}, Y_{3})\)
+  \emph{Partial solution}: Automatic, multiple importance sampling
+  (Paananen et al. 2019)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\emph{Issue 3}: Multiple \(\phi\)?}
+
+\input{tex-input/0011-example-model-graph.tex}
+
+\end{frame}
+
+\begin{frame}{Conclusion}
+
+\begin{center}\includegraphics[width=1\linewidth]{figures/a-trio-of-inference-problems} \end{center}
+
+\begin{itemize}
+\tightlist
 \item
-  Addressing other kinds of internal difference in scale and location
-  (conflict)
+  Multi-source inference is extremely difficult in practice (Meng 2014)
+  (along with multi-resolution and multi-phase)
 \end{itemize}
 
 \end{frame}
@@ -380,26 +582,48 @@ The traceplots are from this example:
 This talk:
 
 \begin{itemize}
-\tightlist
-\item
-  \url{https://github.com/hhau/bsu-together-20mins}
+\item ~
+  \section{TODO: Push this branch to github / link to
+  it}\label{todo-push-this-branch-to-github-link-to-it}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{References}
+\begin{frame}[allowframebreaks]{References}
 
 \hypertarget{refs}{}
+\hypertarget{ref-box:79}{}
+Box, George E. P. 1979. ``Robustness in the Strategy of Scientific Model
+Building.'' In \emph{Robustness in Statistics}, edited by Robert L.
+Launer and Graham N. Wilkinson, 201--36. Academic Press.
+doi:\href{https://doi.org/https://doi.org/10.1016/B978-0-12-438150-6.50018-2}{https://doi.org/10.1016/B978-0-12-438150-6.50018-2}.
+
+\hypertarget{ref-box:80}{}
+---------. 1980. ``Sampling and Bayes' Inference in Scientific Modelling
+and Robustness.'' \emph{Journal of the Royal Statistical Society. Series
+A (General)} 143 (4). Wiley: 383--430.
+\url{http://www.jstor.org/stable/2982063}.
+
+\hypertarget{ref-cook:weisberg:82}{}
+Cook, R.D., and S. Weisberg. 1982. \emph{Residuals and Influence in
+Regression}. Monographs on Statistics and Applied Probability. Chapman
+\& Hall.
+
 \hypertarget{ref-goudie:etal:18}{}
 Goudie, Robert J. B., Anne M. Presanis, David Lunn, Daniela De Angelis,
 and Lorenz Wernisch. 2019. ``Joining and Splitting Models with Markov
-Melding.'' \emph{Bayesian Anal.} 14 (1). International Society for
+Melding.'' \emph{Bayesian Analysis} 14 (1). International Society for
 Bayesian Analysis: 81--109.
 doi:\href{https://doi.org/10.1214/18-BA1104}{10.1214/18-BA1104}.
 
+\hypertarget{ref-hinton:02}{}
+Hinton, Geoffrey E. 2002. ``Training Products of Experts by Minimizing
+Contrastive Divergence.'' \emph{Neural Computation} 14 (8): 1771--1800.
+doi:\href{https://doi.org/10.1162/089976602760128018}{10.1162/089976602760128018}.
+
 \hypertarget{ref-hiraoka:hamada:hori:18}{}
 Hiraoka, Kazuyuki, Toshihiko Hamada, and Gen Hori. 2018. ``Necessary and
-Sufficient Conditions of Proper Estimators based on Self Density Ratio
+Sufficient Conditions of Proper Estimators Based on Self Density Ratio
 for Unnormalized Statistical Models.'' \emph{Neural Networks} 98:
 263--70.
 doi:\href{https://doi.org/10.1016/j.neunet.2017.11.018}{10.1016/j.neunet.2017.11.018}.
@@ -408,6 +632,33 @@ doi:\href{https://doi.org/10.1016/j.neunet.2017.11.018}{10.1016/j.neunet.2017.11
 Jones, M. C. 1991. ``Kernel Density Estimation for Length Biased Data.''
 \emph{Biometrika} 78 (3). Oxford University Press, Biometrika Trust:
 511--19. \url{http://www.jstor.org/stable/2337020}.
+
+\hypertarget{ref-manderson:goudie:20}{}
+Manderson, Andrew A., and Robert J. B. Goudie. 2020. ``A Numerically
+Stable Algorithm for Integrating Bayesian Models Using Markov Melding.''
+\emph{arXiv E-Prints}, arXiv:2001.08038.
+
+\hypertarget{ref-meng:14}{}
+Meng, Xiao-Li. 2014. ``A Trio of Inference Problems That Could Win You a
+Nobel Prize in Statistics (If You Help Fund It).'' CRC Press.
+\url{http://nrs.harvard.edu/urn-3:HUL.InstRepos:11718181}.
+
+\hypertarget{ref-ohagan:etal:06}{}
+O'Hagan, A., C.E. Buck, A. Daneshkhah, J.R. Eiser, P.H. Garthwaite, D.J.
+Jenkinson, J.E. Oakley, and T. Rakow. 2006. \emph{Uncertain Judgements:
+Eliciting Experts' Probabilities}. Statistics in Practice. Wiley.
+doi:\href{https://doi.org/10.1002/0470033312}{10.1002/0470033312}.
+
+\hypertarget{ref-paananen:etal:19}{}
+Paananen, Topi, Juho Piironen, Paul-Christian Bürkner, and Aki Vehtari.
+2019. ``Pushing the Limits of Importance Sampling Through Iterative
+Moment Matching.'' \emph{arXiv E-Prints}, arXiv:1906.08850.
+
+\hypertarget{ref-poole:raftery:00}{}
+Poole, David, and Adrian E. Raftery. 2000. ``Inference for Deterministic
+Simulation Models: The Bayesian Melding Approach.'' \emph{Journal of the
+American Statistical Association} 95 (452). Taylor \& Francis: 1244--55.
+doi:\href{https://doi.org/10.1080/01621459.2000.10474324}{10.1080/01621459.2000.10474324}.
 
 \end{frame}
 

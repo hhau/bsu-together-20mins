@@ -1,0 +1,27 @@
+\begin{center}
+\begin{tikzpicture}[node distance = 1.25cm, thick, state/.style={draw, align = center}]
+  % nodes
+  \node [circle, state, fill = myredhighlight, text = white] (phi) {$\phi$};
+  
+  \node [rectangle, state][left = of phi] (data) {$Y_{1}$};
+  \node [circle, state][above = of data] (theta) {$\theta$};
+  \node [ellipse, state][above = of phi] (pi_pos) {$\pi^{\text{pos}}$};
+
+  \node [circle, state][right = of pi_pos] (chi) {$\chi$};
+  \node [ellipse, state][right = of chi] (pi_det) {$\pi^{\text{det}}$};
+
+  % edges
+  \draw [->] (chi) to (phi);
+  \draw [->] (pi_det) to (phi);
+  \draw [dashed] [->] (theta) to (phi);
+  \draw [dashed] [->] (pi_pos) to (phi);
+  \draw [->] (theta) to (data);
+
+  % bounding boxes
+  \node (stage-1) [draw = mymidblue, fit = (phi) (data) (theta)(pi_pos), inner sep = 0.1cm, dotted] {};
+  \node (stage-1-label) [yshift = 1.5ex, mymidblue] at (stage-1.north east) {$s_{1} - \pd_{\text{meld}, 1}$};
+
+  \node (stage-2) [draw = mydarkblue, fit = (phi) (data) (theta) (pi_pos) (stage-1-label) (chi) (pi_det), inner sep = 0.15cm, dotted] {};
+  \node (stage-2-label) [yshift = 1.5ex, mydarkblue] at (stage-2.north east) {$s_{2} - \pd_{\text{meld}}$};
+\end{tikzpicture}
+\end{center}

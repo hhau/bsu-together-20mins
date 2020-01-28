@@ -1,0 +1,14 @@
+\begin{center}
+\begin{tikzpicture}[node distance = 1.25cm, thick, state/.style={draw, align = center}]
+  % nodes
+  \node [rectangle, state] (data) {$Y_{1}$};
+  \node [circle, state][above = of data] (theta) {$\theta$};
+  \node [circle, state, fill = myredhighlight, text = white][right = of data] (phi) {$\phi$};
+  \node [ellipse, state][above = of phi] (pi_pos) {$\pi^{\text{pos}}$};
+
+  % edges
+  \draw [dashed] [->] (theta) to (phi);
+  \draw [dashed] [->] (pi_pos) to (phi);
+  \draw [->] (theta) to (data);
+\end{tikzpicture}
+\end{center}

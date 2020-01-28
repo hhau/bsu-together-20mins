@@ -1,0 +1,12 @@
+\begin{center}
+\begin{tikzpicture}[node distance = 1.25cm, thick, state/.style={draw, align = center}]
+  % nodes
+  \node [circle, state, fill = myredhighlight, text = white] (phi) {$\phi$};
+  \node [circle, state][above = of phi] (chi) {$\chi$};
+  \node [ellipse, state][right = of chi] (pi_det) {$\pi^{\text{det}}$};
+
+  % edges
+  \draw [->] (chi) to (phi);
+  \draw [->] (pi_det) to (phi);
+\end{tikzpicture}
+\end{center}

@@ -1,27 +1,22 @@
 \begin{center}
-\begin{tikzpicture}[node distance = 2cm, thick, state/.style={circle, draw, minimum width = 1.5cm, align = center}]
+\begin{tikzpicture}[node distance = 2.25cm, thick, state/.style={ellipse, draw, align = center}]
   % nodes
   \node [state] (data) {$Y_{1}$};
-  \node [state, opacity = 1][above right = 1.65cm of data.center] (data1) {$Y_{2}$};
-  \node [state, opacity = 0.5][above right = 1.35cm of data1.center] (data2) {$Y_{3}$};
-  \node [state, opacity = 0.25][above right = 1.5cm of data2.center] (data3) {$Y_{4}$};
+  \node [state][above of = data] (data1) {$Y_{2}$};
+  \node [state][above of = data1] (data2) {$Y_{3}$};
   
-  \node [state][right = 2.0cm of data] (model) {$\pd_{1}(\phi, \psi_{1}, Y_{1})$};
-  \node [state, opacity = 1][above right = 1.75cm of model.center] (model1) {$\boldsymbol{\pd}_{2}(\phi, \psi_{2}, Y_{2})$};
-  \node [state, opacity = 0.2][above right = 1.35cm of model1.center] (model2) {$\pd_{3}(\phi, \psi_{3}, Y_{3})$};
-  \node [state, opacity = 0.1][above right = 1.35cm of model2.center] (model3) {$\pd_{4}(\phi, \psi_{4}, Y_{4})$};
+  \node [state][right = 2.25cm of data] (model) {$\pd_{1}(\phi, \psi_{1}, Y_{1})$};
+  \node [state][above of = model] (model1) {$\textcolor{myredhighlight}{\pd_{2}}(\phi, \psi_{2}, Y_{2})$};
+  \node [state][above of = model1] (model2) {$\pd_{3}(\phi, \psi_{3}, Y_{3})$};
 
   % edges
-  \draw [dashed] [->] (model) to [bend right = 20] (data);  
-  \draw [dashed] [->] (data) to [bend right = 20] (model);  
+  \draw [dashed] [->] (model) to [bend right = 30] (data);  
+  \draw [dashed] [->] (data) to [bend right = 30] (model);  
 
-  \draw [dashed, opacity = 0.7] [->] (model1) to [bend right = 20] (data1);
-  \draw [dashed, opacity = 0.1] [->] (data1) to [bend right =  20] (model1); 
+  \draw [myredhighlight, dashed] [->] (model1) to [bend right = 30] (data1);
+  
+  \draw [dashed] [->] (model2) to [bend right = 30] (data2);
+  \draw [dashed] [->] (data2) to [bend right = 30] (model2); 
 
-  \draw [dashed, opacity = 0.2] [->] (model2) to [bend right = 10] (data2);
-  \draw [dashed, opacity = 0.2] [->] (data2) to [bend right = 10] (model2); 
-
-  \draw [dashed, opacity = 0.1] [->] (model3) to [bend right = 10] (data3);
-  \draw [dashed, opacity = 0.1] [->] (data3) to [bend right = 10] (model3); 
-\end{tikzpicture}
+  \end{tikzpicture}
 \end{center}
